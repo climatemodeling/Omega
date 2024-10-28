@@ -215,11 +215,14 @@ implementations of this method.</p>
 <h3>Time stepper management methods<a class="headerlink" href="#time-stepper-management-methods" title="Permalink to this heading"></a></h3>
 <section id="initialization">
 <h4>Initialization<a class="headerlink" href="#initialization" title="Permalink to this heading"></a></h4>
-<p>The static method:</p>
-<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="n">TimeStepper</span><span class="o">::</span><span class="n">init</span><span class="p">();</span>
+<p>Two static methods:</p>
+<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="n">TimeStepper</span><span class="o">::</span><span class="n">init1</span><span class="p">();</span>
+<span class="n">TimeStepper</span><span class="o">::</span><span class="n">init2</span><span class="p">();</span>
 </pre></div>
 </div>
-<p>initializes the default time stepper. A pointer to it can be retrieved at any time using:</p>
+<p>initialize the default time stepper in two phases. The first phase must be called early in the
+initialization process, and the second phase is called after the default tendency, auxiliary state,
+horizontal mesh, and halo objects have been initialized. A pointer to it can be retrieved at any time using:</p>
 <div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="n">TimeStepper</span><span class="o">*</span><span class="w"> </span><span class="n">DefTimeStepper</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">TimeStepper</span><span class="o">::</span><span class="n">getDefault</span><span class="p">();</span>
 </pre></div>
 </div>
@@ -289,6 +292,17 @@ layer thickness do</p>
 </div>
 <p>and only for normal velocity do</p>
 <div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="n">updateVelocityByTend</span><span class="p">(</span><span class="n">State1</span><span class="p">,</span><span class="w"> </span><span class="n">TimeLevel1</span><span class="p">,</span><span class="w"> </span><span class="n">State2</span><span class="p">,</span><span class="w"> </span><span class="n">TimeLevel2</span><span class="p">,</span><span class="w"> </span><span class="n">Coeff</span><span class="p">);</span>
+</pre></div>
+</div>
+<p>Similarly for tracers, the method for updating tracers is</p>
+<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="n">updateTracersByTend</span><span class="p">(</span><span class="n">NextTracers</span><span class="p">,</span><span class="w"> </span><span class="n">CurTracers</span><span class="p">,</span><span class="w"> </span><span class="n">State1</span><span class="p">,</span><span class="w"> </span><span class="n">TimeLevel1</span><span class="p">,</span><span class="w"> </span><span class="n">State2</span><span class="p">,</span><span class="w"> </span><span class="n">TimeLevel2</span><span class="p">,</span><span class="w"> </span><span class="n">Coeff</span><span class="p">);</span>
+</pre></div>
+</div>
+<p>Additionally, for the RK4 method, there are methods for initializing, accumulating, and
+finalizing the tracer integration for a given time step</p>
+<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="n">weightTracers</span><span class="p">(</span><span class="n">NextTracers</span><span class="p">,</span><span class="w"> </span><span class="n">CurTracers</span><span class="p">,</span><span class="w"> </span><span class="n">CurState</span><span class="p">,</span><span class="w"> </span><span class="n">TimeLevel1</span><span class="p">);</span>
+<span class="n">accumulateTracersUpdate</span><span class="p">(</span><span class="n">AccumTracer</span><span class="p">,</span><span class="w"> </span><span class="n">Coeff</span><span class="p">);</span>
+<span class="n">finalizeTracersUpdate</span><span class="p">(</span><span class="n">NextTracers</span><span class="p">,</span><span class="w"> </span><span class="n">State</span><span class="p">,</span><span class="w"> </span><span class="n">TimeLevel</span><span class="p">);</span>
 </pre></div>
 </div>
 </section>

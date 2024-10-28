@@ -189,6 +189,15 @@ tendency terms are currently implemented:</p>
 <tr class="row-odd"><td><p>VelocityHyperDiffOnEdge</p></td>
 <td><p>biharmonic horizontal mixing, defined on edges</p></td>
 </tr>
+<tr class="row-even"><td><p>TracerHorzAdvOnCell</p></td>
+<td><p>horizontal advection of thickness-weighted tracers</p></td>
+</tr>
+<tr class="row-odd"><td><p>TracerDiffOnCell</p></td>
+<td><p>horizontal diffusion of thickness-weighted tracers</p></td>
+</tr>
+<tr class="row-even"><td><p>TracerHyperDiffOnCell</p></td>
+<td><p>biharmonic horizontal mixing of thickness-weighted tracers</p></td>
+</tr>
 </tbody>
 </table>
 <p>Among the internal data stored by each functor is a <code class="docutils literal notranslate"><span class="pre">bool</span></code> which can enable or
@@ -239,7 +248,27 @@ the currently available tendency terms:</p>
 </tr>
 <tr class="row-odd"><td><p></p></td>
 <td><p>ViscDel4</p></td>
-<td><p>coefficient for horizontal biharmonic mixing</p></td>
+<td><p>horizontal biharmonic mixing coefficient for normal velocity</p></td>
+</tr>
+<tr class="row-even"><td><p>TracerHorzAdvOnCell</p></td>
+<td><p>TracerHorzAdvTendencyEnable</p></td>
+<td><p>enable/disable term</p></td>
+</tr>
+<tr class="row-odd"><td><p>TracerDiffOnCell</p></td>
+<td><p>TracerDiffTendencyEnable</p></td>
+<td><p>enable/disable term</p></td>
+</tr>
+<tr class="row-even"><td><p></p></td>
+<td><p>EddyDiff2</p></td>
+<td><p>horizontal diffusion coefficient</p></td>
+</tr>
+<tr class="row-odd"><td><p>TracerHyperDiffOnCell</p></td>
+<td><p>TracerHyperDiffTendencyEnable</p></td>
+<td><p>enable/disable term</p></td>
+</tr>
+<tr class="row-even"><td><p></p></td>
+<td><p>EddyDiff4</p></td>
+<td><p>biharmonic horizontal mixing coeffienct for tracers</p></td>
 </tr>
 </tbody>
 </table>
