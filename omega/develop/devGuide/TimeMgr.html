@@ -208,23 +208,45 @@ enum defined in the Time Manager header file:</p>
 <span class="p">};</span>
 </pre></div>
 </div>
+<p>During a simulation, only one calendar can be defined and is set with the call:</p>
+<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="n">Calendar</span><span class="o">::</span><span class="n">init</span><span class="p">(</span><span class="s">&quot;CalendarName&quot;</span><span class="p">);</span>
+</pre></div>
+</div>
+<p>that must be set early in the model initialization before other time quantities
+are defined. CalendarName is a string associated with the defined calendars
+above and found in the list CalendarKindName in <code class="docutils literal notranslate"><span class="pre">TimeMgr.h</span></code>. Typically, they
+are the same as the kinds above with a space for multi-word names
+(eg “No Leap”). If a custom calendar is desired rather than the supported
+calendars, a custom calendar can be defined with a different init
+interface in which all the relevant quantities are provided:</p>
+<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="n">Calendar</span><span class="o">::</span><span class="n">init</span><span class="p">(</span>
+<span class="w">   </span><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="n">I4</span><span class="o">&gt;</span><span class="w"> </span><span class="o">&amp;</span><span class="n">InDaysPerMonth</span><span class="p">,</span><span class="w"> </span><span class="c1">///&lt; [in] array of days per month</span>
+<span class="w">   </span><span class="n">I4</span><span class="w"> </span><span class="n">InSecondsPerDay</span><span class="p">,</span><span class="w">              </span><span class="c1">///&lt; [in] seconds per day</span>
+<span class="w">   </span><span class="n">I4</span><span class="w"> </span><span class="n">InSecondsPerYear</span><span class="p">,</span><span class="w">             </span><span class="c1">///&lt; [in] seconds per year</span>
+<span class="w">   </span><span class="n">I4</span><span class="w"> </span><span class="n">InDaysPerYear</span><span class="w">                 </span><span class="c1">///&lt; [in] days per year (dpy)</span>
+<span class="p">);</span>
+</pre></div>
+</div>
 <p>Time is generally tracked as the amount of time elapsed from a reference date
-for a given calendar.</p>
+for a given calendar. A number of public functions exist to retrieve Calendar
+information, convert between dates and elapsed time, check for leap years and
+other checks. However, these are typically used by other TimeMgr classes and
+not directly by the developer. Examples of their use can be found in the
+TimeMgr unit test.</p>
 </section>
 <section id="timeinstant">
 <h3>3. TimeInstant<a class="headerlink" href="#timeinstant" title="Permalink to this heading"></a></h3>
-<p>The TimeInstant class represents a moment in time for a particular calendar. It
-consists of a TimeFrac and a pointer to the Calendar in which the time is based.
+<p>The TimeInstant class represents a moment in time with the particular calendar
+that has been defined for the simulation. It consists of a TimeFrac that
+represents the time since a reference time associated with the defined calendar.
 There are three constructors for initializing a TimeInstant. One method is with
-a pointer to an initialized Calendar object, five 8-byte integers, and an 8-byte
-real value:</p>
-<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="n">OMEGA</span><span class="o">::</span><span class="n">TimeInstant</span><span class="w"> </span><span class="nf">TI1</span><span class="p">(</span><span class="o">&amp;</span><span class="n">CalGreg</span><span class="p">,</span><span class="w"> </span><span class="n">Year</span><span class="p">,</span><span class="w"> </span><span class="n">Month</span><span class="p">,</span><span class="w"> </span><span class="n">Day</span><span class="p">,</span><span class="w"> </span><span class="n">Hour</span><span class="p">,</span><span class="w"> </span><span class="n">Minute</span><span class="p">,</span><span class="w"> </span><span class="n">RealSecond</span><span class="p">);</span>
+five 8-byte integers, and an 8-byte real value:</p>
+<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="n">OMEGA</span><span class="o">::</span><span class="n">TimeInstant</span><span class="w"> </span><span class="nf">TI1</span><span class="p">(</span><span class="n">Year</span><span class="p">,</span><span class="w"> </span><span class="n">Month</span><span class="p">,</span><span class="w"> </span><span class="n">Day</span><span class="p">,</span><span class="w"> </span><span class="n">Hour</span><span class="p">,</span><span class="w"> </span><span class="n">Minute</span><span class="p">,</span><span class="w"> </span><span class="n">RealSecond</span><span class="p">);</span>
 </pre></div>
 </div>
-<p>Alternatively, the TimeInstant can be initialized with a Calendar pointer and
-eight 8-byte integers, with the seconds value represented by three 8-byte
-integers:</p>
-<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="n">OMEGA</span><span class="o">::</span><span class="n">TimeInstant</span><span class="w"> </span><span class="nf">TI2</span><span class="p">(</span><span class="o">&amp;</span><span class="n">CalGreg</span><span class="p">,</span><span class="w"> </span><span class="n">Y</span><span class="p">,</span><span class="w"> </span><span class="n">M</span><span class="p">,</span><span class="w"> </span><span class="n">D</span><span class="p">,</span><span class="w"> </span><span class="n">H</span><span class="p">,</span><span class="w"> </span><span class="n">M</span><span class="p">,</span><span class="w"> </span><span class="n">Whole</span><span class="p">,</span><span class="w"> </span><span class="n">Numer</span><span class="p">,</span><span class="w"> </span><span class="n">Denom</span><span class="p">);</span>
+<p>Alternatively, the TimeInstant can be initialized with eight 8-byte integers,
+with the seconds value represented by three 8-byte integers:</p>
+<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="n">OMEGA</span><span class="o">::</span><span class="n">TimeInstant</span><span class="w"> </span><span class="nf">TI2</span><span class="p">(</span><span class="n">Y</span><span class="p">,</span><span class="w"> </span><span class="n">M</span><span class="p">,</span><span class="w"> </span><span class="n">D</span><span class="p">,</span><span class="w"> </span><span class="n">H</span><span class="p">,</span><span class="w"> </span><span class="n">M</span><span class="p">,</span><span class="w"> </span><span class="n">Whole</span><span class="p">,</span><span class="w"> </span><span class="n">Numer</span><span class="p">,</span><span class="w"> </span><span class="n">Denom</span><span class="p">);</span>
 </pre></div>
 </div>
 <p>A final constructor creates a time instant based on a time string that
@@ -232,7 +254,7 @@ conforms roughly to the ISO standard <code class="docutils literal notranslate">
 the constructor allows for any single-character non-numeric separator between
 each of the numeric fields and the width of the YY and SS fields can be up
 to the 8-byte standards for integer and floats, respectively.</p>
-<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="n">OMEGA</span><span class="o">::</span><span class="n">TimeInstant</span><span class="w"> </span><span class="nf">TI3</span><span class="p">(</span><span class="o">&amp;</span><span class="n">CalGreg</span><span class="p">,</span><span class="w"> </span><span class="n">TimeString</span><span class="p">);</span>
+<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="n">OMEGA</span><span class="o">::</span><span class="n">TimeInstant</span><span class="w"> </span><span class="nf">TI3</span><span class="p">(</span><span class="n">TimeString</span><span class="p">);</span>
 </pre></div>
 </div>
 <p>Among the methods defined in the TimeInstant class is <code class="docutils literal notranslate"><span class="pre">getString</span></code> which will
@@ -274,6 +296,10 @@ header file:</p>
 <span class="w">   </span><span class="n">Months</span><span class="p">,</span><span class="w">   </span><span class="c1">///&lt; time units in months</span>
 <span class="w">   </span><span class="n">Years</span><span class="p">,</span><span class="w">    </span><span class="c1">///&lt; time units in years</span>
 <span class="p">};</span>
+</pre></div>
+</div>
+<p>Finally, a time interval can be defined as the time between two time instants:</p>
+<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="n">OMEGA</span><span class="o">::</span><span class="n">TimeInterval</span><span class="w"> </span><span class="n">MyDeltaTime</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">MyTimeInstant2</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">MyTimeInstant1</span><span class="p">;</span>
 </pre></div>
 </div>
 </section>
