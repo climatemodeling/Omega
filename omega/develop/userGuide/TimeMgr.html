@@ -160,11 +160,30 @@
              
   <section class="tex2jax_ignore mathjax_ignore" id="time-manager-timemgr">
 <span id="omega-user-time-manager"></span><h1>Time Manager (TimeMgr)<a class="headerlink" href="#time-manager-timemgr" title="Permalink to this heading"></a></h1>
-<p>Users will ultimately utilize the Time Manager to control run duration,
-output variables and frequency, forcing data input, etc. via parameters
-defined in YAML configuration files. Details for this are to be determined,
-see the <a class="reference internal" href="../devGuide/TimeMgr.html#omega-dev-time-manager"><span class="std std-ref">Time Manager developer’s guide</span></a> for a more
-comprehensive description of the Time Manager in the meantime.</p>
+<p>The time manager manages various time quantities during a simulation, including
+time steps, time instants, the calendar, clocks and alarms. The user can
+specify a few options through the <code class="docutils literal notranslate"><span class="pre">TimeIntegration</span></code> portion of the Omega
+configuration file. In particular, the user can specify the Calendar used
+for tracking simulation time. Supported calendars include:</p>
+<ul class="simple">
+<li><p>Gregorian: typical western calendar with leap years/days</p></li>
+<li><p>No Leap: a Gregorian calendar without leap days</p></li>
+<li><p>Julian: earlier calendar still used by Eastern Orthodox traditions</p></li>
+<li><p>Julian Day: a calendar that simply tracks the number of days since
+a reference day</p></li>
+<li><p>Modified Julian Day: a modified version of Julian Day that changes the
+reference time</p></li>
+<li><p>360 Day: An artificial calendar with equal 30-day months</p></li>
+<li><p>Custom: A calendar in which a developer can specify the number of
+days per month and days per year. This currently cannot be configured
+entirely via the configuration and would require additional code to
+specify those variables.</p></li>
+<li><p>No Calendar: This is supplied for test cases in which the calendar
+is meaningless and time is simply tracked from time zero.</p></li>
+</ul>
+<p>A number of other time quantities are specified in the <code class="docutils literal notranslate"><span class="pre">TimeIntegration</span></code>
+section (eg time step, start time) and are described in the
+<a class="reference internal" href="TimeStepping.html#omega-user-time-stepping"><span class="std std-ref">TimeStepping</span></a> section.</p>
 </section>
 
 
