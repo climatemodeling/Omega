@@ -11,6 +11,7 @@
 #include "TimeStepper.h"
 
 #include "mpi.h"
+#include "Pacer.h"
 
 #include <iostream>
 
@@ -22,17 +23,22 @@ int main(int argc, char **argv) {
 
    MPI_Init(&argc, &argv); // initialize MPI
    Kokkos::initialize();   // initialize Kokkos
+   Pacer::initialize(MPI_COMM_WORLD);
+   Pacer::setPrefix("Omega");
 
+   Pacer::start("Init");
    ErrCurr = OMEGA::ocnInit(MPI_COMM_WORLD);
    if (ErrCurr != 0)
       LOG_ERROR("Error initializing OMEGA");
-
+   Pacer::stop("Init");
+   //
    // Get time information
    OMEGA::TimeStepper *DefStepper = OMEGA::TimeStepper::getDefault();
    OMEGA::Alarm *EndAlarm         = DefStepper->getEndAlarm();
    OMEGA::Clock *ModelClock       = DefStepper->getClock();
    OMEGA::TimeInstant CurrTime    = ModelClock->getCurrentTime();
 
+   Pacer::start("RunLoop");
    while (ErrCurr == 0 && !(EndAlarm->isRinging())) {
 
       ErrCurr = OMEGA::ocnRun(CurrTime);
@@ -40,10 +46,13 @@ int main(int argc, char **argv) {
       if (ErrCurr != 0)
          LOG_ERROR("Error advancing Omega run interval");
    }
+   Pacer::stop("RunLoop");
 
+   Pacer::start("Finalize");
    ErrFinalize = OMEGA::ocnFinalize(CurrTime);
    if (ErrFinalize != 0)
       LOG_ERROR("Error finalizing OMEGA");
+   Pacer::stop("Finalize");
 
    ErrAll = abs(ErrCurr) + abs(ErrFinalize);
    if (ErrAll == 0) {
@@ -51,6 +60,9 @@ int main(int argc, char **argv) {
    } else {
       LOG_ERROR("OMEGA terminating due to error");
    }
+   
+   Pacer::print("omega");
+   Pacer::finalize();
 
    Kokkos::finalize();
    MPI_Finalize();
