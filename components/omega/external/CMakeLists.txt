@@ -53,6 +53,14 @@ if (NOT TARGET pioc)
 	)
 endif()
 
+# Add E3SM GPTL library
+if (NOT TARGET gptl)
+	add_subdirectory(
+	  ${E3SM_EXTERNALS_ROOT}/../share/timing
+	  ${CMAKE_CURRENT_BINARY_DIR}/gptl
+	)
+endif()
+
 # Add the parmetis and related libraries
 
 if(Parmetis_FOUND)
