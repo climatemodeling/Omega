@@ -56,9 +56,26 @@ endif()
 # Add E3SM GPTL library
 if (NOT TARGET gptl)
 	add_subdirectory(
-	  ${E3SM_EXTERNALS_ROOT}/../share/timing
+	  ${E3SM_ROOT}/share/timing
 	  ${CMAKE_CURRENT_BINARY_DIR}/gptl
 	)
+endif()
+
+# Add the Pacer library
+if (NOT TARGET pacer)
+    add_library(pacer ${E3SM_ROOT}/share/pacer/Pacer.cpp)
+
+    target_include_directories(
+        pacer	
+        PRIVATE
+        ${E3SM_ROOT}/share/timing
+    )
+
+    target_link_libraries(
+        pacer	
+        PUBLIC
+        gptl
+    )
 endif()
 
 # Add the parmetis and related libraries
