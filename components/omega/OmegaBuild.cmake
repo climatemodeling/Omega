@@ -288,7 +288,7 @@ macro(init_standalone_build)
   file(WRITE ${_RunScript}  "#!/usr/bin/env bash\n\n")
   file(APPEND ${_RunScript} "source ./omega_env.sh\n\n")
   list(JOIN OMEGA_MPI_ARGS " " OMEGA_MPI_ARGS_STR)
-  file(APPEND ${_RunScript} "${OMEGA_MPI_EXEC} ${OMEGA_MPI_ARGS_STR} -n 8 -- ./src/omega.exe\n\n")
+  file(APPEND ${_RunScript} "cd test; ${OMEGA_MPI_EXEC} ${OMEGA_MPI_ARGS_STR} -n 8 -- ../src/${OMEGA_EXE_NAME}\n\n")
 
   # create a ctest script
   set(_CtestScript ${OMEGA_BUILD_DIR}/omega_ctest.sh)
@@ -377,10 +377,10 @@ macro(init_standalone_build)
     file(APPEND ${_ProfileScript} "OUTFILE=${OMEGA_BUILD_DIR}/nsys_output\n\n")
     file(APPEND ${_ProfileScript} "# load Nsight Systems Profiler\n")
     file(APPEND ${_ProfileScript} "module load Nsight-Systems\n\n")
-    file(APPEND ${_ProfileScript} "nsys profile -o \$OUTFILE \\\n")
+    file(APPEND ${_ProfileScript} "cd test; nsys profile -o \$OUTFILE \\\n")
     file(APPEND ${_ProfileScript} "    --cuda-memory-usage=true --force-overwrite=true \\\n")
     file(APPEND ${_ProfileScript} "    --trace=cuda,nvtx,osrt \\\n")
-    file(APPEND ${_ProfileScript} "    ./src/omega.exe 1000")
+    file(APPEND ${_ProfileScript} "    ../src/${OMEGA_EXE_NAME}")
 
   elseif("${OMEGA_ARCH}" STREQUAL "HIP")
 
@@ -418,8 +418,8 @@ macro(init_standalone_build)
     endif()
 
     file(APPEND ${_ProfileScript} "OUTFILE=${OMEGA_BUILD_DIR}/rocprof_output.csv\n")
-    file(APPEND ${_ProfileScript} "rocprof --hip-trace --hsa-trace --timestamp on \\\n")
-    file(APPEND ${_ProfileScript} "    -o \$OUTFILE ./src/omega.exe 1000")
+    file(APPEND ${_ProfileScript} "cd test; rocprof --hip-trace --hsa-trace --timestamp on \\\n")
+    file(APPEND ${_ProfileScript} "    -o \$OUTFILE ../src/${OMEGA_EXE_NAME}")
 
   elseif("${OMEGA_ARCH}" STREQUAL "SYCL")
     set(CMAKE_CXX_COMPILER ${OMEGA_SYCL_COMPILER})
